@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from skimage import exposure
+from scipy.spatial.distance import cdist
 
 # --- Load images ---
 img_1 = Image.open("jayce.jpg").convert('RGB')
@@ -10,6 +11,7 @@ img_2 = Image.open("pussy.png").convert('RGB')
 img_np_1 = np.array(img_1)
 img_np_2 = np.array(img_2)
 
+# --- Extract color palettes and cluster labels ---
 def extract_color_palette(img_np, n_clusters=6):
     pixels = img_np.reshape(-1, 3)
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
@@ -21,15 +23,14 @@ def extract_color_palette(img_np, n_clusters=6):
 colors_1, labels_1 = extract_color_palette(img_np_1)
 colors_2, labels_2 = extract_color_palette(img_np_2)
 
-# --- Match clusters by nearest color (so cluster 0 of img1 maps to closest cluster in img2) ---
+# --- Match clusters by nearest color ---
 def match_clusters(colors_src, colors_ref):
-    from scipy.spatial.distance import cdist
     distances = cdist(colors_src, colors_ref)
-    return np.argmin(distances, axis=1)  # index mapping
+    return np.argmin(distances, axis=1)
 
 mapping = match_clusters(colors_1, colors_2)
 
-# --- Histogram matching per cluster ---
+# --- Histogram matching per cluster (fixed) ---
 def histogram_match_per_cluster(src_img, ref_img, labels_src, labels_ref, mapping):
     H, W, C = src_img.shape
     result = np.zeros_like(src_img)
@@ -44,19 +45,21 @@ def histogram_match_per_cluster(src_img, ref_img, labels_src, labels_ref, mappin
         if len(ref_pixels) == 0 or len(src_pixels) == 0:
             continue
 
-        # Histogram match within this cluster
-        matched = exposure.match_histograms(src_pixels.reshape(-1, 1, 3),
-                                            ref_pixels.reshape(-1, 1, 3),
-                                            channel_axis=-1)
-        result[src_mask] = matched.reshape(-1, 3)
+        # Match each color channel separately
+        matched = np.zeros_like(src_pixels)
+        for c in range(3):  # RGB channels
+            matched[:, c] = exposure.match_histograms(
+                src_pixels[:, c], ref_pixels[:, c]
+            )
+
+        result[src_mask] = matched
 
     return np.clip(result, 0, 255).astype(np.uint8)
 
-matched_img = histogram_match_per_cluster(
-    img_np_1, img_np_2, labels_1, labels_2, mapping
-)
+# --- Apply the per-cluster histogram matching ---
+matched_img = histogram_match_per_cluster(img_np_1, img_np_2, labels_1, labels_2, mapping)
 
-# --- Show result ---
+# --- Show results ---
 plt.figure(figsize=(12, 6))
 plt.subplot(1, 3, 1)
 plt.imshow(img_np_1)
@@ -70,7 +73,7 @@ plt.axis("off")
 
 plt.subplot(1, 3, 3)
 plt.imshow(matched_img)
-plt.title("Per-Cluster Histogram Match")
+plt.title("Per-Cluster Histogram Match (Fixed)")
 plt.axis("off")
 
 plt.show()
