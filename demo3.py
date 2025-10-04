@@ -13,11 +13,12 @@ img_np_2 = np.array(img_2)
 
 # --- Extract color palettes and cluster labels ---
 def extract_color_palette(img_np, n_clusters=6):
+    H, W, C = img_np.shape
     pixels = img_np.reshape(-1, 3)
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     kmeans.fit(pixels)
     colors = kmeans.cluster_centers_.astype(int)
-    labels = kmeans.labels_
+    labels = kmeans.labels_.reshape(H, W)   # <-- fix shape here
     return colors, labels
 
 colors_1, labels_1 = extract_color_palette(img_np_1)
@@ -47,7 +48,7 @@ def histogram_match_per_cluster(src_img, ref_img, labels_src, labels_ref, mappin
 
         # Match each color channel separately
         matched = np.zeros_like(src_pixels)
-        for c in range(3):  # RGB channels
+        for c in range(3):  # RGB
             matched[:, c] = exposure.match_histograms(
                 src_pixels[:, c], ref_pixels[:, c]
             )
@@ -73,7 +74,7 @@ plt.axis("off")
 
 plt.subplot(1, 3, 3)
 plt.imshow(matched_img)
-plt.title("Per-Cluster Histogram Match (Fixed)")
+plt.title("Per-Cluster Histogram Match")
 plt.axis("off")
 
 plt.show()
