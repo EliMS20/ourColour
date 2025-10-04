@@ -2,7 +2,7 @@ import numpy as np
 
 def recolor_clusters(img_np, labels, palette_old, palette_new):
 
-    pallette_old 
+    
     H, W, C = img_np.shape
     pixels = img_np.reshape(-1, 3).astype(float)
     
