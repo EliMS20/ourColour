@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
-def extract_color_palette(img_np, n_colors=5):
+def extract_color_palette(img_np):
   
     pixels = img_np.reshape(-1, 3)
 
