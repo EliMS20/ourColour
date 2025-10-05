@@ -15,8 +15,7 @@ class ImageFrame(ctk.CTkFrame):
         super().__init__(master)
         self.app = master
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure((0,1), weight=1)
-        ctk.set_appearance_mode("dark")
+        self.grid_rowconfigure((0,1), weight=1)     
 
         self.title = ctk.CTkLabel(self,
                                   text="Image",
@@ -68,6 +67,7 @@ class ImageFrame(ctk.CTkFrame):
             self.app.button_frame.clear_buttons()
         
         self.app.button_frame.set_color_but.configure(state="normal")
+        self.app.color_palette_og = self.app.color_palette.copy()
         self.app.button_frame.add_buttons(self.app.color_palette)
         self.app.color_palette_copy = self.app.color_palette.copy()
         self.no_input_img_disp.destroy()
@@ -122,6 +122,16 @@ class ButtonFrame(ctk.CTkFrame):
             state="disabled"
         )
         self.set_color_but.grid(row=11, column=0, padx=10, pady=10, sticky="ew",columnspan=3)
+
+        # reset button
+        self.reset_but = ctk.CTkButton(
+            self,
+            text="Reset image",
+            corner_radius = 6,
+            command = self.reset_image,
+            state="disabled"
+        )
+        self.reset_but.grid(row=12, column=0, padx=10, pady=10, sticky="ew", columnspan=3)
         
 
     def open_color_picker(self, button):
@@ -146,7 +156,11 @@ class ButtonFrame(ctk.CTkFrame):
             
 
     
-    def add_buttons(self, colors):        # Button to open color picker
+    def add_buttons(self, colors):  
+        
+        if len(self.buttons) > 0:
+            self.clear_buttons()
+            self.buttons = []      # Button to open color picker
 
         for i in range(len(colors)):
             hex_val = f"#{colors[i][0]:02X}{colors[i][1]:02X}{colors[i][2]:02X}"
@@ -161,6 +175,9 @@ class ButtonFrame(ctk.CTkFrame):
             self.buttons.append(button)
         self.set_color_but.configure(state="normal")
         self.set_color_but.grid(row=11, column=0, padx=10, pady=10, sticky="ew", columnspan=3)
+        self.reset_but.configure(state="normal")
+        self.reset_but.grid(row=12, column=0, padx=10, pady=10, sticky="ew", columnspan=3)
+
 
 
 
@@ -184,8 +201,16 @@ class ButtonFrame(ctk.CTkFrame):
     def set_sigma(self, value):
         self.sigma = int(value)
         self.sigma_level.configure(text=f"{self.sigma}")
-        pass
         
+    def reset_image(self):
+        self.app.image_frame.update_image(self.app.img_arr)
+        self.app.img_arr_modified = self.app.img_arr.copy()
+        self.app.color_palette = self.app.color_palette_og.copy()
+        self.app.color_palette_copy = self.app.color_palette_og.copy()
+
+        self.add_buttons(self.app.color_palette_og)
+
+        pass
 
 
 class App(ctk.CTk):
@@ -195,11 +220,14 @@ class App(ctk.CTk):
         self.title("Image + Color Picker Button Example")
         self.geometry("1280x720")
         self.resizable(False, False)
+        self.color_palette_og = []
         self.color_palette = []
         self.color_palette_copy = []
         self.labels = []
         self.img_arr = []
         self.img_arr_modified = []
+        ctk.set_appearance_mode("dark")
+
 
         # Layout
         self.grid_columnconfigure(0, weight=0)
