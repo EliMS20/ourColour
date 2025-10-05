@@ -135,10 +135,14 @@ class ButtonFrame(ctk.CTkFrame):
     
     def set_colors(self):
         if (self.app.color_palette != self.app.color_palette_copy).any():
-            new_img_arr = pal.recolor_clusters(self.app.img_arr_modified, 
-                                 self.app.labels, 
+         #   new_img_arr = pal.recolor_clusters(self.app.img_arr_modified, 
+         #                        self.app.labels, 
+         #                       self.app.color_palette,
+         #                        self.app.color_palette_copy)
+            new_img_arr = pal.smooth_recolor((self.app.img_arr_modified, 
                                  self.app.color_palette,
                                  self.app.color_palette_copy)
+            
             self.app.color_palette = self.app.color_palette_copy.copy()
             self.app.image_frame.update_image(new_img_arr)
             self.app.img_arr_modified = new_img_arr
