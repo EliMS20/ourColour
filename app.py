@@ -131,8 +131,8 @@ class ButtonFrame(ctk.CTkFrame):
             command = self.reset_image,
             state="disabled"
         )
-        self.reset_but.grid(row=12, column=0, padx=10, pady=10, sticky="ew", columnspan=3)
-        
+        self.reset_but.grid(row=12, column=0, padx=10, pady=10, sticky="ew", columnspan=3)        
+
 
     def open_color_picker(self, button):
         # Open color picker with current color
@@ -213,6 +213,29 @@ class ButtonFrame(ctk.CTkFrame):
         pass
 
 
+class Toggles(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.app = master
+
+        self.grid_columnconfigure(0, weight=1)
+
+        self.title = ctk.CTkLabel(self,
+                                  text="Choose algorithm",
+                                  fg_color="gray50",
+                                  corner_radius=6)
+        self.title.grid(row=0, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+
+        self.naive_tog = ctk.CTkCheckBox(self, text="Naive", onvalue=1, offvalue=0)
+        self.hist_tog = ctk.CTkCheckBox(self, text="Histogram", onvalue=1, offvalue=0)
+        self.smart_tog = ctk.CTkCheckBox(self, text="Smart", onvalue=1, offvalue=0)
+
+        self.naive_tog.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        self.hist_tog.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        self.smart_tog.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+
+    pass
+
 class App(ctk.CTk):
     def __init__(self):
         # initialize
@@ -236,10 +259,13 @@ class App(ctk.CTk):
 
         # Frames
         self.image_frame = ImageFrame(self)  # replace with your image fil
-        self.image_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+        self.image_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew", rowspan=2)
 
         self.button_frame = ButtonFrame(self, [[1, 2, 3]])
-        self.button_frame.grid(row=0, column=0, padx=10, pady=10)
+        self.button_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nswe")
+
+        self.toggle_frame = Toggles(self)
+        self.toggle_frame.grid(row=1, column=0, padx=10, pady=10, sticky="we")
 
 
 if __name__ == "__main__":
