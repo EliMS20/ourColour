@@ -4,16 +4,6 @@ from sklearn.cluster import KMeans
 
 
 def extract_color_palette(img_np, numnode=6):
-    """
-    Extracts a perceptually meaningful color palette using Lab-space KMeans.
-
-    Input:
-        img_np: HxWx3 uint8 RGB image
-        numnode: desired number of clusters (max 6)
-    Output:
-        colors: (numnode, 3) uint8 RGB palette
-        labels: flattened (H*W,) cluster labels
-    """
     if numnode > 6:
         numnode = 6
 
@@ -34,16 +24,6 @@ def extract_color_palette(img_np, numnode=6):
 
 # smart recolouring
 def smooth_recolor(img_np, palette_old, palette_new, sigma=10):
-    """
-    Smoothly recolors an image based on palette mapping using Lab-space distances.
-
-    Input:
-        img_np: HxWx3 uint8 RGB
-        palette_old, palette_new: (n,3) uint8 RGB palettes
-        sigma: controls smoothness (larger = wider color influence)
-    Output:
-        recolored: HxWx3 uint8 RGB
-    """
     img_lab = color.rgb2lab(img_np.astype(float) / 255.0)
     orig_lab = img_lab.copy()
 
