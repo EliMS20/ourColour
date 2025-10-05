@@ -27,8 +27,6 @@ class ImageFrame(ctk.CTkFrame):
             filetypes=[("Image files", "*.jpg *.jpeg *.png *.gif *.bmp")]
         )
         self.pil_img = Image.open(filepath)
-        self.pil_img.thumbnail((600, 400))
-
 
         self.img = ctk.CTkImage(light_image=self.pil_img,
                                 dark_image=self.pil_img,
@@ -37,8 +35,12 @@ class ImageFrame(ctk.CTkFrame):
         # self.img_label.place(relx=.5, rely=.5, anchor=ctk.CENTER, relwidth=.6, relheight=.6)
         self.img_label.grid(row=0, column=0, sticky="nswe")
 
-    def update_image(self, new_img_arr):
-        pass
+    def update_image(self, updated_img_arr):
+        self.pil_img = Image.fromarray(updated_img_arr)
+        self.img = ctk.CTkImage(light_image=self.pil_img,
+                                dark_image=self.pil_img,
+                                size=(600, 400))
+        self.img_label = ctk.CTkLabel(self, image=self.img, text="")        pass
         
 
 class ButtonFrame(ctk.CTkFrame):
