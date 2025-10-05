@@ -40,7 +40,7 @@ class ImageFrame(ctk.CTkFrame):
         self.img = ctk.CTkImage(light_image=self.pil_img,
                                 dark_image=self.pil_img,
                                 size=(600, 400))
-        self.img_label = ctk.CTkLabel(self, image=self.img, text="")        pass
+        self.img_label = ctk.CTkLabel(self, image=self.img, text="")
         
 
 class ButtonFrame(ctk.CTkFrame):
