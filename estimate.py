@@ -88,10 +88,3 @@ def estimate_distinct_colors_lab(
         reps.append(np.clip(weighted.round(), 0, 255).astype(np.uint8))
 
     return len(reps), reps
-
-# img = Image.open("/home/eli/ourColour/_methode_times_prod_web_bin_7c4d6e24-1a32-11ec-95b9-6429167b0259.jpg")
-# img_arr = np.array(img)
-
-# one, two = estimate_distinct_colors_lab(img_arr)
-# print(one)
-# print(two)
