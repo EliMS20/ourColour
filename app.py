@@ -139,7 +139,7 @@ class ButtonFrame(ctk.CTkFrame):
          #                        self.app.labels, 
          #                       self.app.color_palette,
          #                        self.app.color_palette_copy)
-            new_img_arr = pal.smooth_recolor((self.app.img_arr_modified, 
+            new_img_arr = pal.smooth_recolor(self.app.img_arr_modified, 
                                  self.app.color_palette,
                                  self.app.color_palette_copy)
             
