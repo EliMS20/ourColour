@@ -1,6 +1,8 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from CTkColorPicker import AskColor
+from tkinter import filedialog
+import numpy as np
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -10,12 +12,34 @@ class ImageFrame(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
         # Load and display image
-        self.img = Image.open("/home/eli/Pictures/Wallpapers/anime-style-clouds.jpg")
+        self.img = None
         # self.img = self.img.resize((400, 300))
-        self.display_img = ctk.CTkImage(light_image=self.img, dark_image=self.img, size=(400,300))
-        self.label = ctk.CTkLabel(self, image=self.display_img, text="")
-        self.label.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+        self.open_file_button = ctk.CTkButton(self, text="Open Image", command=self.open_image)
+        self.open_file_button.grid(row=1, column=0, sticky="nsew")
+
+    def open_image(self):
+        filepath = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select an image",
+            filetypes=[("Image files", "*.jpg *.jpeg *.png *.gif *.bmp")]
+        )
+        self.pil_img = Image.open(filepath)
+        self.pil_img.thumbnail((600, 400))
+
+
+        self.img = ctk.CTkImage(light_image=self.pil_img,
+                                dark_image=self.pil_img,
+                                size=(600, 400))
+        self.img_label = ctk.CTkLabel(self, image=self.img, text="")
+        # self.img_label.place(relx=.5, rely=.5, anchor=ctk.CENTER, relwidth=.6, relheight=.6)
+        self.img_label.grid(row=0, column=0, sticky="nswe")
+
+    def update_image(self, new_img_arr):
+        pass
+        
 
 class ButtonFrame(ctk.CTkFrame):
     def __init__(self, master):
@@ -45,9 +69,11 @@ class ButtonFrame(ctk.CTkFrame):
 
 class App(ctk.CTk):
     def __init__(self):
+        # initialize
         super().__init__()
         self.title("Image + Color Picker Button Example")
-        self.geometry("650x400")
+        self.geometry("1280x720")
+        self.resizable(False, False)
 
         # Layout
         self.grid_columnconfigure(0, weight=3)
