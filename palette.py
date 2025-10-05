@@ -33,7 +33,7 @@ def extract_color_palette(img_np, numnode=6):
     return colors, labels
 
 
-def smooth_recolor(img_np, palette_old, palette_new, sigma=25):
+def smooth_recolor(img_np, palette_old, palette_new, sigma=10):
     """
     Smoothly recolors an image based on palette mapping using Lab-space distances.
 
@@ -60,22 +60,3 @@ def smooth_recolor(img_np, palette_old, palette_new, sigma=25):
 
     recolored = color.lab2rgb(img_lab)
     return np.clip(recolored * 255.0, 0, 255).astype(np.uint8)
-
-
-def recolor_clusters(img_np, labels, palette_old, palette_new):
-    """
-    Hard recoloring based on KMeans cluster labels.
-    Input/output identical to your original.
-    """
-    H, W, C = img_np.shape
-    pixels = img_np.reshape(-1, 3).astype(float)
-
-    for k in range(len(palette_new)):
-        shift = palette_new[k] - palette_old[k]
-        pixels[labels == k] += shift
-
-    pixels = np.clip(pixels, 0, 255)
-    recolored_img = pixels.reshape(H, W, C).astype(np.uint8)
-
-    matched = exposure.match_histograms(img_np, recolored_img, channel_axis=-1)
-    return np.clip(matched, 0, 255).astype(np.uint8)
