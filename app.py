@@ -16,6 +16,7 @@ class ImageFrame(ctk.CTkFrame):
         self.app = master
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure((0,1), weight=1)
+        ctk.set_appearance_mode("dark")
 
         self.title = ctk.CTkLabel(self,
                                   text="Image",
