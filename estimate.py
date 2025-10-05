@@ -11,20 +11,7 @@ def estimate_distinct_colors_lab(
     sample_pixels=100_000,
     random_state=42
 ):
-    """
-    Estimate visually distinct colors using perceptual LAB color distance.
 
-    Parameters:
-        img_input (str or ndarray): Path to image or image array.
-        max_k (int): Max number of clusters for initial color grouping.
-        distance_thresh (float): LAB Euclidean distance threshold for merging (ΔE).
-                                 ~2 = very similar, 10–20 = noticeable, 30+ = very distinct.
-        sample_pixels (int): Number of random pixels to sample for speed.
-        random_state (int): Random seed for reproducibility.
-
-    Returns:
-        (int, list[np.ndarray]): (count, list of representative colors [RGB uint8])
-    """
     # Load and prepare image
     if isinstance(img_input, str):
         arr = np.array(Image.open(img_input).convert("RGB"))
