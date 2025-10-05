@@ -33,7 +33,7 @@ def extract_color_palette(img_np, numnode=6):
     return colors, labels
 
 
-def smooth_recolor(img_np, palette_old, palette_new, sigma=8):
+def smooth_recolor(img_np, palette_old, palette_new, sigma=25):
     """
     Smoothly recolors an image based on palette mapping using Lab-space distances.
 
